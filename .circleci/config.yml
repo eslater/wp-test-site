@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Checkout Infrastructur
+          name: Checkout Infrastructure
           command: |
             git clone git@github.com:eslater/wp-site-infrastructure.git tools 
       - setup_remote_docker
