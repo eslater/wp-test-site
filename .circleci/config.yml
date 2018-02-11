@@ -1,16 +1,15 @@
 version: 2
 jobs:
   build-job:
-    working_directory: /tmp/build
     docker:
       - image: circleci/cci-demo-docker-primary:0.0.2
+    working_directory: /tmp/build
     steps:
       - checkout
-        - path: /tmp/build/project
       - run:
           name: Checkout Infrastructur
           command: |
-            git clone git@github.com:eslater/wp-site-infrastructure.git /tmp/build/wp-site-infrastructure
+            git clone git@github.com:eslater/wp-site-infrastructure.git . 
       - setup_remote_docker
       - run:
           name: Install Dependencies 
@@ -30,8 +29,6 @@ jobs:
       - run: 
           name: Build Image 
           command: |
-            cp -r wp-site-infrastructure/docker/ project/
-            cd project/
             docker build -t eslater/wp-site:$CIRCLE_BUILD_NUM -t eslater/wp-site:latest .
       - run: 
           name: Push to Docker Hub 
