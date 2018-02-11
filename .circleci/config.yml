@@ -36,7 +36,7 @@ jobs:
           command: |
             docker push $PUBLISHED_IMAGE_NAME:$CIRCLE_BUILD_NUM
             docker push $PUBLISHED_IMAGE_NAME:latest
-  stage:
+  staging:
     docker:
       - image: debian:stretch
     steps:
