@@ -32,7 +32,7 @@ jobs:
           command: |
             cp -r wp-site-infrastructure/docker/ project/
             cd project/
-            docker build -t eslater/wp-site:$CIRCLE_BUILD_NUM -t eslater/wp-site:latest docker/
+            docker build -t eslater/wp-site:$CIRCLE_BUILD_NUM -t eslater/wp-site:latest .
       - run: 
           name: Push to Docker Hub 
           command: |
