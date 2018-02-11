@@ -30,12 +30,12 @@ jobs:
           name: Build Image 
           command: |
             cp tools/docker/* .
-            docker build -t eslater/wp-site:$CIRCLE_BUILD_NUM -t eslater/wp-site:latest . 
+            docker build -t $PUBLISHED_IMAGE_NAME:$CIRCLE_BUILD_NUM -t $PUBLISHED_IMAGE_NAME:latest .
       - run: 
           name: Push to Docker Hub 
           command: |
-            docker push eslater/wp-site:$CIRCLE_BUILD_NUM
-            docker push eslater/wp-site:latest
+            docker push $PUBLISHED_IMAGE_NAME:$CIRCLE_BUILD_NUM
+            docker push $PUBLISHED_IMAGE_NAME:latest
   deploy-job:
     docker:
       - image: debian:stretch
