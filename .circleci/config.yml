@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-job:
+  build:
     docker:
       - image: circleci/cci-demo-docker-primary:0.0.2
     working_directory: /tmp/build
@@ -36,7 +36,7 @@ jobs:
           command: |
             docker push $PUBLISHED_IMAGE_NAME:$CIRCLE_BUILD_NUM
             docker push $PUBLISHED_IMAGE_NAME:latest
-  deploy-job:
+  stage:
     docker:
       - image: debian:stretch
     steps:
@@ -49,15 +49,33 @@ jobs:
           command: scp -o StrictHostKeyChecking=no initdata.sql $DROPLET_USER@$DROPLET_IP:~
       - run:
           name: Deploy Latest
-          command: ssh -o StrictHostKeyChecking=no $DROPLET_USER@$DROPLET_IP "./pull-latest-and-redeploy.sh"
+          command: ssh -o StrictHostKeyChecking=no $STAGING_USER@$STAGING_IP "./pull-latest-and-redeploy.sh"
+  production:
+    docker:
+      - image: debian:stretch
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies 
+          command: apt-get update; apt-get install -y openssh-client ca-certificates openssl;
+      - run:
+          name: Move Site Bundle to Droplet
+          command: scp -o StrictHostKeyChecking=no initdata.sql $DROPLET_USER@$DROPLET_IP:~
+      - run:
+          name: Deploy Latest
+          command: ssh -o StrictHostKeyChecking=no $PRODUCTION_USER@$PRODUCTION_IP "./pull-latest-and-redeploy.sh"
 workflows:
   version: 2
-  build-deploy:
+  wp-build-deploy-pipeline:
     jobs:
-      - build-job
-      - deploy-job:
+      - build
+      - staging:
           requires:
-            - build-job
-          filters:
-            branches:
-              only: master
+            - build
+      - hold:
+          type: approval
+          requires:
+           - staging 
+      - production:
+          requires:
+            - hold
