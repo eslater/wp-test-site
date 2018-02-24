@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Checkout Infrastructure
           command: |
-            git clone git@github.com:eslater/wp-site-infrastructure.git tools 
+            git clone git@github.com:500RocketsMarketing/wp-site-infrastructure.git tools 
       - setup_remote_docker
       - run:
           name: Install Dependencies 
